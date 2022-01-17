@@ -15,17 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.common;
+package org.apache.seatunnel.spark.source
 
-public final class Constants {
-    public static final String ROW_ROOT = "__root__";
-    public static final String ROW_TMP = "__tmp__";
-    public static final String ROW_JSON = "__json__";
+import org.apache.seatunnel.common.config.CheckConfigUtil.check
+import org.apache.seatunnel.common.config.CheckResult
+import org.apache.seatunnel.spark.SparkEnvironment
+import org.apache.seatunnel.spark.batch.SparkBatchSource
+import org.apache.spark.sql.{Dataset, Row}
 
-    public static final String LOGO = "SeaTunnel";
+class Tidb extends SparkBatchSource {
 
-    public static final String CHECK_SUCCESS = "All check is success";
+  override def prepare(env: SparkEnvironment): Unit = {}
 
-    private Constants() {
-    }
+  override def checkConfig(): CheckResult = {
+    check(config, "pre_sql", "database")
+  }
+
+  override def getData(env: SparkEnvironment): Dataset[Row] = {
+    val spark = env.getSparkSession
+    spark.sql("use " + config.getString("database"))
+    spark.sql(config.getString("pre_sql"))
+  }
 }
