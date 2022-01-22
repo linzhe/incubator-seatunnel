@@ -47,6 +47,8 @@ import java.util.Map;
 
 public class Elasticsearch implements FlinkStreamSink<Row, Row>, FlinkBatchSink<Row, Row> {
 
+    private static final int DEFAULT_CONFIG_SIZE = 3;
+
     private Config config;
     private String indexName;
 
@@ -62,12 +64,12 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row>, FlinkBatchSink<
 
     @Override
     public CheckResult checkConfig() {
-        return CheckConfigUtil.check(config, "hosts");
+        return CheckConfigUtil.checkAllExists(config, "hosts");
     }
 
     @Override
     public void prepare(FlinkEnvironment env) {
-        Config defaultConfig = ConfigFactory.parseMap(new HashMap<String, String>(2) {
+        Config defaultConfig = ConfigFactory.parseMap(new HashMap<String, String>(DEFAULT_CONFIG_SIZE) {
             {
                 put("index", "seatunnel");
                 put("index_type", "log");
@@ -93,8 +95,8 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row>, FlinkBatchSink<
                 httpHosts,
                 new ElasticsearchSinkFunction<Row>() {
                     public IndexRequest createIndexRequest(Row element) {
-                        Map<String, Object> json = new HashMap<>(100);
                         int elementLen = element.getArity();
+                        Map<String, Object> json = new HashMap<>(elementLen);
                         for (int i = 0; i < elementLen; i++) {
                             json.put(fieldNames[i], element.getField(i));
                         }
@@ -132,8 +134,8 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row>, FlinkBatchSink<
             }
 
             private IndexRequest createIndexRequest(Row element) {
-                Map<String, Object> json = new HashMap<>(100);
                 int elementLen = element.getArity();
+                Map<String, Object> json = new HashMap<>(elementLen);
                 for (int i = 0; i < elementLen; i++) {
                     json.put(fieldNames[i], element.getField(i));
                 }
