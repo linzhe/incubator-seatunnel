@@ -17,27 +17,34 @@
 
 package org.apache.seatunnel.flink.sink;
 
-import org.apache.flink.api.java.DataSet;
-import org.apache.flink.api.java.operators.DataSink;
-import org.apache.flink.types.Row;
 import org.apache.seatunnel.common.config.CheckConfigUtil;
 import org.apache.seatunnel.common.config.CheckResult;
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
 import org.apache.seatunnel.flink.FlinkEnvironment;
 import org.apache.seatunnel.flink.batch.FlinkBatchSink;
 
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+
+import org.apache.flink.api.java.DataSet;
+import org.apache.flink.api.java.operators.DataSink;
+import org.apache.flink.types.Row;
+
 public class DruidSink implements FlinkBatchSink<Row, Row> {
 
+    private static final long serialVersionUID = -2967782261362988646L;
     private static final String COORDINATOR_URL = "coordinator_url";
     private static final String DATASOURCE = "datasource";
+    private static final String TIMESTAMP_COLUMN = "timestamp_column";
+    private static final String TIMESTAMP_FORMAT = "timestamp_format";
 
     private Config config;
     private String coordinatorURL;
     private String datasource;
+    private String timestampColumn;
+    private String timestampFormat;
 
     @Override
     public DataSink<Row> outputBatch(FlinkEnvironment env, DataSet<Row> dataSet) {
-        return dataSet.output(new DruidOutputFormat(coordinatorURL, datasource));
+        return dataSet.output(new DruidOutputFormat(coordinatorURL, datasource, timestampColumn, timestampFormat));
     }
 
     @Override
@@ -59,5 +66,7 @@ public class DruidSink implements FlinkBatchSink<Row, Row> {
     public void prepare(FlinkEnvironment env) {
         this.coordinatorURL = config.getString(COORDINATOR_URL);
         this.datasource = config.getString(DATASOURCE);
+        this.timestampColumn = config.hasPath(TIMESTAMP_COLUMN) ? config.getString(TIMESTAMP_COLUMN) : null;
+        this.timestampFormat = config.hasPath(TIMESTAMP_FORMAT) ? config.getString(TIMESTAMP_FORMAT) : null;
     }
 }

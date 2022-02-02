@@ -17,12 +17,14 @@
 
 package org.apache.seatunnel.flink.sink;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
 import org.apache.seatunnel.common.config.CheckConfigUtil;
+import org.apache.seatunnel.common.config.CheckResult;
 import org.apache.seatunnel.flink.FlinkEnvironment;
 import org.apache.seatunnel.flink.batch.FlinkBatchSink;
 import org.apache.seatunnel.flink.stream.FlinkStreamSink;
-import org.apache.seatunnel.common.config.CheckResult;
+
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+
 import org.apache.flink.api.common.io.FileOutputFormat;
 import org.apache.flink.api.common.serialization.Encoder;
 import org.apache.flink.api.java.DataSet;
@@ -35,7 +37,6 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.api.functions.sink.filesystem.StreamingFileSink;
 import org.apache.flink.types.Row;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,8 @@ import java.io.PrintStream;
 public class FileSink implements FlinkStreamSink<Row, Row>, FlinkBatchSink<Row, Row> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSink.class);
+
+    private static final long serialVersionUID = -1648045076508797396L;
 
     private static final String PATH = "path";
     private static final String FORMAT = "format";
