@@ -1,4 +1,6 @@
-# Sink plugin: InfluxDB
+# InfluxDB
+
+> Sink plugin: InfluxDB [Flink]
 
 ## Description
 
@@ -15,6 +17,7 @@ Write data to InfluxDB.
 | measurement | `String`       | yes      | -             |
 | tags        | `List<String>` | yes      | -             |
 | fields      | `List<String>` | yes      | -             |
+| parallelism | `Int`          | no       | -             |
 
 ### server_url [`String`]
 
@@ -43,6 +46,11 @@ The list of Tag in InfluxDB.
 ### fields [`List<String>`]
 
 The list of Field in InfluxDB.
+
+### parallelism [`Int`]
+
+The parallelism of an individual operator, for InfluxDbSink
+
 
 ## Example
 
